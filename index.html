@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Tarjetas QSL</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Generador de Tarjetas QSL</h1>
+        <form id="qslForm">
+            <label for="indicativo">Indicativo:</label>
+            <input type="text" id="indicativo" required>
+
+            <label for="nombre">Nombre:</label>
+            <input type="text" id="nombre" required>
+
+            <label for="fecha">Fecha:</label>
+            <input type="date" id="fecha" required>
+
+            <button type="button" onclick="generateQSLCard()">Generar Tarjeta</button>
+        </form>
+        <canvas id="qslCanvas" width="600" height="400"></canvas>
+        <button id="downloadButton" style="display:none;" onclick="downloadImage()">Descargar Tarjeta</button>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
