@@ -31,27 +31,19 @@ function generateQSLCard() {
         
         reader.readAsDataURL(backgroundImageInput.files[0]);
     } else {
-        ctx.fillStyle = 'white';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
         drawQSLContent(ctx, indicativo, nombre, fecha, frecuencia, modo, rst, ubicacion, grid, equipo, antena, hora, qrz, comentarios);
     }
 
     document.getElementById('downloadButton').style.display = 'inline';
 }
 
-// Función para dibujar el contenido de la tarjeta QSL sin el encabezado
+// Función para dibujar el contenido de la tarjeta QSL sin fondo blanco opaco
 function drawQSLContent(ctx, indicativo, nombre, fecha, frecuencia, modo, rst, ubicacion, grid, equipo, antena, hora, qrz, comentarios) {
-    // Fondo y bordes principales
-    ctx.fillStyle = '#e0e0e0';
-    ctx.fillRect(20, 20, ctx.canvas.width - 40, ctx.canvas.height - 40); // Borde externo
-    ctx.fillStyle = '#ffffff';
-    ctx.fillRect(30, 30, ctx.canvas.width - 60, ctx.canvas.height - 60); // Fondo blanco
-
-    // Simulación de tabla con secciones y líneas divisorias
-    ctx.lineWidth = 1;
+    // Bordes y líneas divisorias, sin fondo blanco para la tabla
     ctx.strokeStyle = '#1f2d3d';
+    ctx.lineWidth = 1;
 
-    // Dibujar líneas horizontales para secciones
+    // Líneas divisorias horizontales
     ctx.beginPath();
     ctx.moveTo(40, 90); ctx.lineTo(ctx.canvas.width - 40, 90);
     ctx.moveTo(40, 180); ctx.lineTo(ctx.canvas.width - 40, 180);
@@ -59,32 +51,54 @@ function drawQSLContent(ctx, indicativo, nombre, fecha, frecuencia, modo, rst, u
     ctx.moveTo(40, 360); ctx.lineTo(ctx.canvas.width - 40, 360);
     ctx.stroke();
 
-    // Texto alineado en cada sección
+    // Texto alineado y ajustado en cada sección
     ctx.fillStyle = '#333';
     ctx.textAlign = 'left';
+
+    // Ajuste automático del tamaño de fuente si el texto es demasiado largo
     ctx.font = '16px Arial';
 
+    // Función para agregar saltos de línea si el texto es muy largo
+    function wrapText(text, x, y, maxWidth, lineHeight) {
+        const words = text.split(' ');
+        let line = '';
+        for (let n = 0; n < words.length; n++) {
+            const testLine = line + words[n] + ' ';
+            const metrics = ctx.measureText(testLine);
+            const testWidth = metrics.width;
+            if (testWidth > maxWidth && n > 0) {
+                ctx.fillText(line, x, y);
+                line = words[n] + ' ';
+                y += lineHeight;
+            } else {
+                line = testLine;
+            }
+        }
+        ctx.fillText(line, x, y);
+        return y + lineHeight;  // Retorna el nuevo "y" para continuar dibujando más texto debajo
+    }
+
     // Sección de Información Principal
-    ctx.fillText(`Indicativo: ${indicativo}`, 50, 110);
-    ctx.fillText(`Nombre: ${nombre}`, 50, 140);
-    ctx.fillText(`Fecha: ${fecha}  Hora UTC: ${hora}`, 50, 170);
+    let y = wrapText(`Indicativo: ${indicativo}`, 50, 100, ctx.canvas.width - 100, 20);
+    y = wrapText(`Nombre: ${nombre}`, 50, y, ctx.canvas.width - 100, 20);
+    y = wrapText(`Fecha: ${fecha}  Hora UTC: ${hora}`, 50, y, ctx.canvas.width - 100, 20);
 
     // Sección de Ubicación
-    ctx.fillText(`Ubicación: ${ubicacion}`, 50, 200);
-    ctx.fillText(`Grid Locator: ${grid}`, 50, 230);
+    y = wrapText(`Ubicación: ${ubicacion}`, 50, y + 10, ctx.canvas.width - 100, 20);
+    y = wrapText(`Grid Locator: ${grid}`, 50, y, ctx.canvas.width - 100, 20);
 
     // Sección de Frecuencia y Reporte
-    ctx.fillText(`Frecuencia: ${frecuencia}`, 50, 290);
-    ctx.fillText(`Modo: ${modo}`, 50, 320);
-    ctx.fillText(`Reporte RST: ${rst}`, 50, 350);
+    y = wrapText(`Frecuencia: ${frecuencia}`, 50, y + 10, ctx.canvas.width - 100, 20);
+    y = wrapText(`Modo: ${modo}`, 50, y, ctx.canvas.width - 100, 20);
+    y = wrapText(`Reporte RST: ${rst}`, 50, y, ctx.canvas.width - 100, 20);
 
     // Sección de Equipo y Antena
-    ctx.fillText(`Equipo de Radio: ${equipo}`, 50, 380);
-    ctx.fillText(`Antena: ${antena}`, 50, 410);
+    y = wrapText(`Equipo de Radio: ${equipo}`, 50, y + 10, ctx.canvas.width - 100, 20);
+    y = wrapText(`Antena: ${antena}`, 50, y, ctx.canvas.width - 100, 20);
 
     // Sección de Contacto y Comentarios
-    ctx.fillText(`QRZ/Contacto: ${qrz}`, 50, 450);
-    ctx.fillText(`Comentarios: ${comentarios}`, 50, 480);
+    y = wrapText(`QRZ/Contacto: ${qrz}`, 50, y + 10, ctx.canvas.width - 100, 20);
+    wrapText(`Comentarios: ${comentarios}`, 50, y, ctx.canvas.width - 100, 20);
 
     // Texto final de agradecimiento
     ctx.textAlign = 'center';
