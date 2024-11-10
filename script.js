@@ -23,43 +23,73 @@ function generateQSLCard() {
         reader.onload = function (event) {
             const background = new Image();
             background.onload = function () {
-                ctx.drawImage(background, 0, 0, canvas.width, canvas.height);  // Dibuja la imagen de fondo
-                drawText(ctx, indicativo, nombre, fecha, frecuencia, modo, rst, ubicacion, grid, equipo, antena, hora, qrz, comentarios);  // Dibuja el texto
+                ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
+                drawQSLContent(ctx, indicativo, nombre, fecha, frecuencia, modo, rst, ubicacion, grid, equipo, antena, hora, qrz, comentarios);
             };
             background.src = event.target.result;
         };
         
         reader.readAsDataURL(backgroundImageInput.files[0]);
     } else {
-        // Si no se selecciona imagen, usar fondo blanco
         ctx.fillStyle = 'white';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-        drawText(ctx, indicativo, nombre, fecha, frecuencia, modo, rst, ubicacion, grid, equipo, antena, hora, qrz, comentarios);  // Dibuja el texto en fondo blanco
+        drawQSLContent(ctx, indicativo, nombre, fecha, frecuencia, modo, rst, ubicacion, grid, equipo, antena, hora, qrz, comentarios);
     }
 
     document.getElementById('downloadButton').style.display = 'inline';
 }
 
-// Función separada para dibujar el texto
-function drawText(ctx, indicativo, nombre, fecha, frecuencia, modo, rst, ubicacion, grid, equipo, antena, hora, qrz, comentarios) {
-    ctx.fillStyle = 'black';
-    ctx.font = '20px Arial';
-    ctx.fillText(`Tarjeta QSL`, 250, 30);
+// Función para dibujar el contenido de la tarjeta QSL sin el encabezado
+function drawQSLContent(ctx, indicativo, nombre, fecha, frecuencia, modo, rst, ubicacion, grid, equipo, antena, hora, qrz, comentarios) {
+    // Fondo y bordes principales
+    ctx.fillStyle = '#e0e0e0';
+    ctx.fillRect(20, 20, ctx.canvas.width - 40, ctx.canvas.height - 40); // Borde externo
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(30, 30, ctx.canvas.width - 60, ctx.canvas.height - 60); // Fondo blanco
 
+    // Simulación de tabla con secciones y líneas divisorias
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = '#1f2d3d';
+
+    // Dibujar líneas horizontales para secciones
+    ctx.beginPath();
+    ctx.moveTo(40, 90); ctx.lineTo(ctx.canvas.width - 40, 90);
+    ctx.moveTo(40, 180); ctx.lineTo(ctx.canvas.width - 40, 180);
+    ctx.moveTo(40, 270); ctx.lineTo(ctx.canvas.width - 40, 270);
+    ctx.moveTo(40, 360); ctx.lineTo(ctx.canvas.width - 40, 360);
+    ctx.stroke();
+
+    // Texto alineado en cada sección
+    ctx.fillStyle = '#333';
+    ctx.textAlign = 'left';
     ctx.font = '16px Arial';
-    ctx.fillText(`Indicativo: ${indicativo}`, 20, 60);
-    ctx.fillText(`Nombre: ${nombre}`, 20, 90);
-    ctx.fillText(`Fecha: ${fecha}`, 20, 120);
-    ctx.fillText(`Frecuencia: ${frecuencia}`, 20, 150);
-    ctx.fillText(`Modo: ${modo}`, 20, 180);
-    ctx.fillText(`Reporte RST: ${rst}`, 20, 210);
-    ctx.fillText(`Ubicación: ${ubicacion}`, 20, 240);
-    ctx.fillText(`Grid Locator: ${grid}`, 20, 270);
-    ctx.fillText(`Equipo: ${equipo}`, 20, 300);
-    ctx.fillText(`Antena: ${antena}`, 20, 330);
-    ctx.fillText(`Hora UTC: ${hora}`, 20, 360);
-    ctx.fillText(`QRZ/Contacto: ${qrz}`, 20, 390);
-    ctx.fillText(`Comentarios: ${comentarios}`, 20, 420);
+
+    // Sección de Información Principal
+    ctx.fillText(`Indicativo: ${indicativo}`, 50, 110);
+    ctx.fillText(`Nombre: ${nombre}`, 50, 140);
+    ctx.fillText(`Fecha: ${fecha}  Hora UTC: ${hora}`, 50, 170);
+
+    // Sección de Ubicación
+    ctx.fillText(`Ubicación: ${ubicacion}`, 50, 200);
+    ctx.fillText(`Grid Locator: ${grid}`, 50, 230);
+
+    // Sección de Frecuencia y Reporte
+    ctx.fillText(`Frecuencia: ${frecuencia}`, 50, 290);
+    ctx.fillText(`Modo: ${modo}`, 50, 320);
+    ctx.fillText(`Reporte RST: ${rst}`, 50, 350);
+
+    // Sección de Equipo y Antena
+    ctx.fillText(`Equipo de Radio: ${equipo}`, 50, 380);
+    ctx.fillText(`Antena: ${antena}`, 50, 410);
+
+    // Sección de Contacto y Comentarios
+    ctx.fillText(`QRZ/Contacto: ${qrz}`, 50, 450);
+    ctx.fillText(`Comentarios: ${comentarios}`, 50, 480);
+
+    // Texto final de agradecimiento
+    ctx.textAlign = 'center';
+    ctx.font = 'italic 14px Arial';
+    ctx.fillText("Gracias por el contacto", ctx.canvas.width / 2, ctx.canvas.height - 30);
 }
 
 function downloadImage() {
