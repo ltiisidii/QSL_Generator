@@ -19,6 +19,40 @@
             <label for="fecha">Fecha:</label>
             <input type="date" id="fecha" required>
 
+            <label for="frecuencia">Frecuencia:</label>
+            <input type="text" id="frecuencia" placeholder="Ej. 144.390 MHz">
+
+            <label for="modo">Modo:</label>
+            <input type="text" id="modo" placeholder="Ej. FM, SSB, CW, FT8">
+
+            <label for="rst">Reporte RST:</label>
+            <input type="text" id="rst" placeholder="Ej. 599">
+
+            <label for="ubicacion">Ubicación:</label>
+            <input type="text" id="ubicacion" placeholder="Ej. Buenos Aires, Argentina">
+
+            <label for="grid">Grid Locator:</label>
+            <input type="text" id="grid" placeholder="Ej. GF05qv">
+
+            <label for="equipo">Equipo de Radio:</label>
+            <input type="text" id="equipo" placeholder="Ej. Icom IC-705">
+
+            <label for="antena">Antena:</label>
+            <input type="text" id="antena" placeholder="Ej. Dipolo para 40m">
+
+            <label for="hora">Hora UTC:</label>
+            <input type="time" id="hora">
+
+            <label for="qrz">QRZ o Contacto:</label>
+            <input type="text" id="qrz" placeholder="Ej. www.qrz.com/db/LU1ABC">
+
+            <label for="comentarios">Comentarios:</label>
+            <textarea id="comentarios" placeholder="Gracias por el contacto en la banda de 40m"></textarea>
+
+            <!-- Campo para cargar imagen de fondo -->
+            <label for="backgroundImage">Imagen de Fondo:</label>
+            <input type="file" id="backgroundImage" accept="image/*">
+
             <button type="button" onclick="generateQSLCard()">Generar Tarjeta</button>
         </form>
         <canvas id="qslCanvas" width="600" height="400"></canvas>
