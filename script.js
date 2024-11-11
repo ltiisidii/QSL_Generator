@@ -17,24 +17,49 @@ function generateQSLCard() {
     const ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Fondo blanco con borde exterior
-    ctx.fillStyle = '#ffffff';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    const backgroundImageInput = document.getElementById('backgroundImage');
+
+    // Verifica si se seleccionó una imagen de fondo
+    if (backgroundImageInput.files && backgroundImageInput.files[0]) {
+        const reader = new FileReader();
+
+        reader.onload = function (event) {
+            const background = new Image();
+            background.onload = function () {
+                // Dibuja la imagen de fondo en el canvas
+                ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
+                drawQSLContent(ctx, indicativo, nombre, fecha, frecuencia, modo, rst, ubicacion, grid, equipo, antena, hora, qrz, comentarios);
+            };
+            background.src = event.target.result;
+        };
+        
+        reader.readAsDataURL(backgroundImageInput.files[0]);
+    } else {
+        // Si no se selecciona una imagen de fondo, solo dibuja el contenido de la tarjeta
+        drawQSLContent(ctx, indicativo, nombre, fecha, frecuencia, modo, rst, ubicacion, grid, equipo, antena, hora, qrz, comentarios);
+    }
+
+    document.getElementById('downloadButton').style.display = 'inline';
+}
+
+// Función para dibujar el contenido de la tarjeta QSL
+function drawQSLContent(ctx, indicativo, nombre, fecha, frecuencia, modo, rst, ubicacion, grid, equipo, antena, hora, qrz, comentarios) {
+    // Borde exterior
     ctx.strokeStyle = '#000000';
     ctx.lineWidth = 2;
-    ctx.strokeRect(0, 0, canvas.width, canvas.height);
+    ctx.strokeRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
     // Encabezado con Indicativo y "QSO with"
     ctx.font = 'bold 36px Arial';
     ctx.textAlign = 'center';
     ctx.fillStyle = '#000000';
-    ctx.fillText(`QSO with ${indicativo}`, canvas.width / 2, 50);
+    ctx.fillText(`QSO with ${indicativo}`, ctx.canvas.width / 2, 50);
 
     // Configuración de la tabla
     const tableStartX = 50;
     const tableStartY = 100;
     const rowHeight = 60;
-    const colWidth = (canvas.width - 100) / 2;
+    const colWidth = (ctx.canvas.width - 100) / 2;
 
     ctx.lineWidth = 1;
     ctx.font = '20px Arial';
@@ -55,15 +80,13 @@ function generateQSLCard() {
 
     // Comentarios en la parte inferior
     ctx.fillText('Comments:', tableStartX, tableStartY + rowHeight * 6);
-    wrapText(ctx, comentarios, tableStartX, tableStartY + rowHeight * 7, canvas.width - 100, 24);
+    wrapText(ctx, comentarios, tableStartX, tableStartY + rowHeight * 7, ctx.canvas.width - 100, 24);
 
     // Pie de página
     ctx.font = 'italic 18px Arial';
     ctx.textAlign = 'center';
-    ctx.fillText(`QRZ/Contact: ${qrz}`, canvas.width / 2, canvas.height - 50);
-    ctx.fillText('Thank you for the contact', canvas.width / 2, canvas.height - 20);
-
-    document.getElementById('downloadButton').style.display = 'inline';
+    ctx.fillText(`QRZ/Contact: ${qrz}`, ctx.canvas.width / 2, ctx.canvas.height - 50);
+    ctx.fillText('Thank you for the contact', ctx.canvas.width / 2, ctx.canvas.height - 20);
 }
 
 // Función para dibujar cada fila de la tabla
