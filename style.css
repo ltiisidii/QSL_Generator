@@ -1,52 +1,152 @@
-body {
-    font-family: Arial, sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    background-color: #f9f9f9;
-    color: #333;
-    margin: 0;
-    padding: 1rem;
+/* Estilos generales para modo claro y oscuro */
+body.light-mode {
+    background-color: #f8f9fa;
+    color: #212529;
+}
+body.dark-mode {
+    background-color: #121212;
+    color: #f8f9fa;
+    transition: background-color 0.3s, color 0.3s;
 }
 
-.container {
-    text-align: center;
-    max-width: 800px;
-    padding: 20px;
-    background-color: #ffffff;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
+/* Fondo y texto en elementos específicos para modo claro */
+.light-mode .bg-light {
+    background-color: #ffffff !important;
+    color: #212529;
 }
 
-h1 {
-    margin-bottom: 20px;
-    font-size: 1.5rem;
-    color: #555;
+/* Fondo y texto en elementos específicos para modo oscuro */
+.dark-mode .bg-light, 
+.dark-mode .container, 
+.dark-mode .form-select, 
+.dark-mode .form-control, 
+.dark-mode .btn {
+    background-color: #1e1e1e !important;
+    color: #f8f9fa;
 }
 
-form {
-    display: grid;
-    gap: 10px;
-    margin-bottom: 20px;
+/* Botones en diferentes modos */
+.light-mode .btn-primary, .light-mode .btn-success {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+    color: #fff;
+}
+.dark-mode .btn-primary, .dark-mode .btn-success {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: #fff;
 }
 
-label {
-    font-weight: bold;
-    color: #555;
-}
-
-input, textarea, button {
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 1rem;
-}
-
-canvas {
-    border: 1px solid #ddd;
-    margin-top: 20px;
+/* Ajuste del canvas para modo oscuro */
+#qslCanvas {
     width: 100%;
     height: auto;
-    border-radius: 4px;
+    max-width: 600px;
+    background-color: #ffffff;
+}
+.dark-mode #qslCanvas {
+    background-color: #333;
+    border: 1px solid #444;
+}
+
+/* Transiciones suaves para elementos */
+body, .bg-light, .btn, #qslCanvas {
+    transition: background-color 0.3s, color 0.3s;
+}
+
+/* Color del texto de los placeholders en modo oscuro */
+.dark-mode ::placeholder {
+    color: #b5b5b5; /* Ajusta este color para que se vea mejor en fondo oscuro */
+    opacity: 1; /* Asegura que el color tenga la opacidad completa */
+}
+
+/* Para asegurar que el placeholder en modo claro se vea bien */
+.light-mode ::placeholder {
+    color: #6c757d; /* Color estándar de placeholder en modo claro */
+    opacity: 1;
+}
+/* Sobreescribe la variable Bootstrap en dark-mode */
+/* Fuerte sobreescritura para .bg-light en modo oscuro */
+.dark-mode .bg-light {
+    background-color: #1e1e1e !important;
+}
+
+/* Estilos del switch personalizado */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: 0.4s;
+    border-radius: 50%;
+}
+
+/* Iconos de sol y luna dentro del switch */
+.sun-icon, .moon-icon {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 16px;
+}
+
+.sun-icon {
+    left: 8px;
+    color: #f1c40f; /* Color del sol */
+}
+
+.moon-icon {
+    right: 8px;
+    color: #555; /* Color más tenue de la luna en modo oscuro */
+}
+
+/* Cambia el color de la luna al activar el modo oscuro */
+input:checked + .slider .moon-icon {
+    color: #cccccc; /* Color de la luna en modo oscuro */
+}
+
+/* Modo oscuro - cambia el fondo del switch */
+input:checked + .slider {
+    background-color: #121212;
+}
+
+/* Mueve el botón deslizante a la derecha cuando está activado */
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+
+/* Oculta y muestra los iconos dependiendo del modo */
+input:checked + .slider .sun-icon {
+    display: none;
+}
+
+input:not(:checked) + .slider .moon-icon {
+    display: none;
 }
