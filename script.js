@@ -19,41 +19,40 @@ function generateQSLCard() {
 
     const backgroundImageInput = document.getElementById('backgroundImage');
 
-    // Verifica si se seleccionó una imagen de fondo
     if (backgroundImageInput.files && backgroundImageInput.files[0]) {
         const reader = new FileReader();
 
         reader.onload = function (event) {
             const background = new Image();
             background.onload = function () {
-                // Dibuja la imagen de fondo en el canvas
                 ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
-                drawQSLContent(ctx, indicativo, nombre, fecha, frecuencia, modo, rst, ubicacion, grid, equipo, antena, hora, qrz, comentarios);
+                drawQSLContentWithBackground(ctx, indicativo, nombre, fecha, frecuencia, modo, rst, ubicacion, grid, equipo, antena, hora, qrz, comentarios);
             };
             background.src = event.target.result;
         };
         
         reader.readAsDataURL(backgroundImageInput.files[0]);
     } else {
-        // Si no se selecciona una imagen de fondo, solo dibuja el contenido de la tarjeta
-        drawQSLContent(ctx, indicativo, nombre, fecha, frecuencia, modo, rst, ubicacion, grid, equipo, antena, hora, qrz, comentarios);
+        drawQSLContentWithBackground(ctx, indicativo, nombre, fecha, frecuencia, modo, rst, ubicacion, grid, equipo, antena, hora, qrz, comentarios);
     }
 
     document.getElementById('downloadButton').style.display = 'inline';
 }
 
-// Función para dibujar el contenido de la tarjeta QSL
-function drawQSLContent(ctx, indicativo, nombre, fecha, frecuencia, modo, rst, ubicacion, grid, equipo, antena, hora, qrz, comentarios) {
-    // Borde exterior
-    ctx.strokeStyle = '#000000';
-    ctx.lineWidth = 2;
-    ctx.strokeRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+function drawQSLContentWithBackground(ctx, indicativo, nombre, fecha, frecuencia, modo, rst, ubicacion, grid, equipo, antena, hora, qrz, comentarios) {
+    // Fondo semitransparente y borde negro
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.35)'; 
+    ctx.fillRect(30, 30, ctx.canvas.width - 60, ctx.canvas.height - 80);
 
-    // Encabezado con Indicativo y "QSO with"
+    ctx.strokeStyle = '#000000';
+    ctx.lineWidth = 5; // Borde negro más grueso
+    ctx.strokeRect(30, 30, ctx.canvas.width - 60, ctx.canvas.height - 80);
+
+    // Configuración de texto en blanco
+    ctx.fillStyle = '#000';
     ctx.font = 'bold 36px Arial';
     ctx.textAlign = 'center';
-    ctx.fillStyle = '#000000';
-    ctx.fillText(`QSO with ${indicativo}`, ctx.canvas.width / 2, 50);
+    ctx.fillText(`QSO with ${indicativo}`, ctx.canvas.width / 2, 70);
 
     // Configuración de la tabla
     const tableStartX = 50;
@@ -82,15 +81,16 @@ function drawQSLContent(ctx, indicativo, nombre, fecha, frecuencia, modo, rst, u
     ctx.fillText('Comments:', tableStartX, tableStartY + rowHeight * 6);
     wrapText(ctx, comentarios, tableStartX, tableStartY + rowHeight * 7, ctx.canvas.width - 100, 24);
 
-    // Pie de página
+    // Pie de página dentro del recuadro
     ctx.font = 'italic 18px Arial';
     ctx.textAlign = 'center';
-    ctx.fillText(`QRZ/Contact: ${qrz}`, ctx.canvas.width / 2, ctx.canvas.height - 50);
-    ctx.fillText('Thank you for the contact', ctx.canvas.width / 2, ctx.canvas.height - 20);
+    ctx.fillText(`QRZ/Contact: ${qrz}`, ctx.canvas.width / 2, ctx.canvas.height - 90);
+    ctx.fillText('Thank you for the contact', ctx.canvas.width / 2, ctx.canvas.height - 60);
 }
 
 // Función para dibujar cada fila de la tabla
 function drawTableRow(ctx, label, value, x, y, width, height) {
+    ctx.strokeStyle = '#000';
     ctx.strokeRect(x, y, width, height);
     ctx.fillText(label, x + 10, y + height / 2 + 8);
     ctx.fillText(value, x + width / 2, y + height / 2 + 8);
