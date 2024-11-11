@@ -5,60 +5,59 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Generador de Tarjetas QSL</title>
     <link rel="stylesheet" href="style.css">
-    <meta name="description" content="Generador de tarjetas QSL para radioaficionados con opciones de personalización y descarga.">
 </head>
 <body>
     <main class="container">
         <h1>Generador de Tarjetas QSL</h1>
-        <form id="qslForm" aria-label="Formulario para generar tarjeta QSL">
+        <form id="qslForm">
             <label for="indicativo">Indicativo:</label>
-            <input type="text" id="indicativo" required aria-required="true" aria-label="Ingresar indicativo">
+            <input type="text" id="indicativo" required>
 
             <label for="nombre">Nombre:</label>
-            <input type="text" id="nombre" required aria-required="true" aria-label="Ingresar nombre">
+            <input type="text" id="nombre" required>
 
             <label for="fecha">Fecha:</label>
-            <input type="date" id="fecha" required aria-required="true" aria-label="Seleccionar fecha">
+            <input type="date" id="fecha" required>
 
             <label for="frecuencia">Frecuencia:</label>
-            <input type="text" id="frecuencia" placeholder="Ej. 144.390 MHz" aria-label="Ingresar frecuencia">
+            <input type="text" id="frecuencia" placeholder="Ej. 144.390 MHz">
 
             <label for="modo">Modo:</label>
-            <input type="text" id="modo" placeholder="Ej. FM, SSB, CW, FT8" aria-label="Ingresar modo de transmisión">
+            <input type="text" id="modo" placeholder="Ej. FM, SSB, CW, FT8">
 
             <label for="rst">Reporte RST:</label>
-            <input type="text" id="rst" placeholder="Ej. 599" aria-label="Ingresar reporte RST">
+            <input type="text" id="rst" placeholder="Ej. 599">
 
             <label for="ubicacion">Ubicación:</label>
-            <input type="text" id="ubicacion" placeholder="Ej. Buenos Aires, Argentina" aria-label="Ingresar ubicación">
+            <input type="text" id="ubicacion" placeholder="Ej. Buenos Aires, Argentina">
 
             <label for="grid">Grid Locator:</label>
-            <input type="text" id="grid" placeholder="Ej. GF05qv" aria-label="Ingresar grid locator">
+            <input type="text" id="grid" placeholder="Ej. GF05qv">
 
             <label for="equipo">Equipo de Radio:</label>
-            <input type="text" id="equipo" placeholder="Ej. Icom IC-705" aria-label="Ingresar equipo de radio">
+            <input type="text" id="equipo" placeholder="Ej. Icom IC-705">
 
             <label for="antena">Antena:</label>
-            <input type="text" id="antena" placeholder="Ej. Dipolo para 40m" aria-label="Ingresar antena">
+            <input type="text" id="antena" placeholder="Ej. Dipolo para 40m">
 
             <label for="hora">Hora UTC:</label>
-            <input type="time" id="hora" aria-label="Seleccionar hora UTC">
+            <input type="time" id="hora">
 
             <label for="qrz">QRZ o Contacto:</label>
-            <input type="text" id="qrz" placeholder="Ej. www.qrz.com/db/LU1ABC" aria-label="Ingresar QRZ o contacto">
+            <input type="text" id="qrz" placeholder="Ej. www.qrz.com/db/LU1ABC">
 
             <label for="comentarios">Comentarios:</label>
-            <textarea id="comentarios" placeholder="Gracias por el contacto en la banda de 40m" aria-label="Ingresar comentarios adicionales"></textarea>
+            <textarea id="comentarios" placeholder="Gracias por el contacto en la banda de 40m"></textarea>
 
             <label for="backgroundImage">Imagen de Fondo:</label>
-            <input type="file" id="backgroundImage" accept="image/*" aria-label="Seleccionar imagen de fondo">
+            <input type="file" id="backgroundImage" accept="image/*">
 
-            <button type="button" onclick="generateQSLCard()" aria-label="Generar tarjeta QSL">Generar Tarjeta</button>
+            <button type="button" onclick="generateQSLCard()">Generar Tarjeta</button>
         </form>
         <div class="canvas-container">
-            <canvas id="qslCanvas"></canvas>
+            <canvas id="qslCanvas" width="1200" height="800"></canvas>
         </div>
-        <button id="downloadButton" style="display:none;" onclick="downloadImage()" aria-label="Descargar tarjeta QSL">Descargar Tarjeta</button>
+        <button id="downloadButton" style="display:none;" onclick="downloadImage()">Descargar Tarjeta</button>
     </main>
     <script src="script.js" defer></script>
 </body>

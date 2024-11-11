@@ -1,12 +1,3 @@
-/* Reset básico */
-*,
-*::before,
-*::after {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
 body {
     font-family: Arial, sans-serif;
     display: flex;
@@ -21,13 +12,11 @@ body {
 
 .container {
     text-align: center;
-    max-width: 600px;
-    width: 100%;
+    max-width: 800px;
     padding: 20px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
     background-color: #ffffff;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
 }
 
 h1 {
@@ -38,7 +27,6 @@ h1 {
 
 form {
     display: grid;
-    grid-template-columns: 1fr;
     gap: 10px;
     margin-bottom: 20px;
 }
@@ -55,53 +43,10 @@ input, textarea, button {
     font-size: 1rem;
 }
 
-.canvas-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-    max-width: 100%;
-}
-
 canvas {
-    width: 100%;
-    max-width: 600px; /* Máximo tamaño del canvas */
-    height: auto; /* Mantener relación de aspecto */
     border: 1px solid #ddd;
     margin-top: 20px;
+    width: 100%;
+    height: auto;
     border-radius: 4px;
-}
-
-button {
-    padding: 10px;
-    font-size: 1rem;
-    cursor: pointer;
-    background-color: #4CAF50;
-    color: #ffffff;
-    border: none;
-    border-radius: 4px;
-    transition: background-color 0.3s ease;
-}
-
-button:hover {
-    background-color: #45a049;
-}
-
-#downloadButton {
-    margin-top: 10px;
-}
-
-/* Estilos Responsive */
-@media (min-width: 768px) {
-    .container {
-        max-width: 80%;
-    }
-
-    form {
-        grid-template-columns: 1fr 1fr;
-    }
-
-    label, input, textarea, button {
-        font-size: 1rem;
-    }
 }
