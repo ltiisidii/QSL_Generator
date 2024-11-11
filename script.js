@@ -1,5 +1,5 @@
 function generateQSLCard() {
-    const indicativo = document.getElementById('indicativo').value;
+    const indicativo = document.getElementById('indicativo').value.toUpperCase();
     const nombre = document.getElementById('nombre').value;
     const fecha = document.getElementById('fecha').value;
     const frecuencia = document.getElementById('frecuencia').value;
@@ -15,101 +15,77 @@ function generateQSLCard() {
 
     const canvas = document.getElementById('qslCanvas');
     const ctx = canvas.getContext('2d');
-    const backgroundImageInput = document.getElementById('backgroundImage');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);  // Limpia el canvas
 
-    if (backgroundImageInput.files && backgroundImageInput.files[0]) {
-        const reader = new FileReader();
+    // Fondo blanco con borde exterior
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(10, 10, canvas.width - 20, canvas.height - 20);
+    ctx.strokeStyle = '#000000';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(10, 10, canvas.width - 20, canvas.height - 20);
 
-        reader.onload = function (event) {
-            const background = new Image();
-            background.onload = function () {
-                ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
-                drawQSLContent(ctx, indicativo, nombre, fecha, frecuencia, modo, rst, ubicacion, grid, equipo, antena, hora, qrz, comentarios);
-            };
-            background.src = event.target.result;
-        };
-        
-        reader.readAsDataURL(backgroundImageInput.files[0]);
-    } else {
-        drawQSLContent(ctx, indicativo, nombre, fecha, frecuencia, modo, rst, ubicacion, grid, equipo, antena, hora, qrz, comentarios);
-    }
+    // Encabezado con Indicativo
+    ctx.font = 'bold 30px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#000000';
+    ctx.fillText(indicativo, canvas.width / 2, 50);
 
-    document.getElementById('downloadButton').style.display = 'inline';
-}
+    // Configuración de la tabla
+    const tableStartX = 20;
+    const tableStartY = 70;
+    const rowHeight = 40;
+    const colWidth = (canvas.width - 40) / 2;
 
-// Función para dibujar el contenido de la tarjeta QSL sin fondo blanco opaco
-function drawQSLContent(ctx, indicativo, nombre, fecha, frecuencia, modo, rst, ubicacion, grid, equipo, antena, hora, qrz, comentarios) {
-    // Bordes y líneas divisorias, sin fondo blanco para la tabla
-    ctx.strokeStyle = '#1f2d3d';
     ctx.lineWidth = 1;
-
-    // Líneas divisorias horizontales
-    ctx.beginPath();
-    ctx.moveTo(40, 90); ctx.lineTo(ctx.canvas.width - 40, 90);
-    ctx.moveTo(40, 180); ctx.lineTo(ctx.canvas.width - 40, 180);
-    ctx.moveTo(40, 270); ctx.lineTo(ctx.canvas.width - 40, 270);
-    ctx.moveTo(40, 360); ctx.lineTo(ctx.canvas.width - 40, 360);
-    ctx.stroke();
-
-    // Texto alineado y ajustado en cada sección
-    ctx.fillStyle = '#333';
+    ctx.font = '16px Arial';
     ctx.textAlign = 'left';
 
-    // Ajuste automático del tamaño de fuente si el texto es demasiado largo
-    ctx.font = '16px Arial';
+    // Primera columna
+    drawTableRow(ctx, 'Fecha:', fecha, tableStartX, tableStartY, colWidth, rowHeight);
+    drawTableRow(ctx, 'Hora UTC:', hora, tableStartX, tableStartY + rowHeight, colWidth, rowHeight);
+    drawTableRow(ctx, 'Frecuencia:', frecuencia, tableStartX, tableStartY + rowHeight * 2, colWidth, rowHeight);
+    drawTableRow(ctx, 'Modo:', modo, tableStartX, tableStartY + rowHeight * 3, colWidth, rowHeight);
+    drawTableRow(ctx, 'Reporte RST:', rst, tableStartX, tableStartY + rowHeight * 4, colWidth, rowHeight);
 
-    // Función para agregar saltos de línea si el texto es muy largo
-    function wrapText(text, x, y, maxWidth, lineHeight) {
-        const words = text.split(' ');
-        let line = '';
-        for (let n = 0; n < words.length; n++) {
-            const testLine = line + words[n] + ' ';
-            const metrics = ctx.measureText(testLine);
-            const testWidth = metrics.width;
-            if (testWidth > maxWidth && n > 0) {
-                ctx.fillText(line, x, y);
-                line = words[n] + ' ';
-                y += lineHeight;
-            } else {
-                line = testLine;
-            }
-        }
-        ctx.fillText(line, x, y);
-        return y + lineHeight;  // Retorna el nuevo "y" para continuar dibujando más texto debajo
-    }
+    // Segunda columna
+    drawTableRow(ctx, 'Ubicación:', ubicacion, tableStartX + colWidth, tableStartY, colWidth, rowHeight);
+    drawTableRow(ctx, 'Grid Locator:', grid, tableStartX + colWidth, tableStartY + rowHeight, colWidth, rowHeight);
+    drawTableRow(ctx, 'Equipo:', equipo, tableStartX + colWidth, tableStartY + rowHeight * 2, colWidth, rowHeight);
+    drawTableRow(ctx, 'Antena:', antena, tableStartX + colWidth, tableStartY + rowHeight * 3, colWidth, rowHeight);
 
-    // Sección de Información Principal
-    let y = wrapText(`Indicativo: ${indicativo}`, 50, 100, ctx.canvas.width - 100, 20);
-    y = wrapText(`Nombre: ${nombre}`, 50, y, ctx.canvas.width - 100, 20);
-    y = wrapText(`Fecha: ${fecha}  Hora UTC: ${hora}`, 50, y, ctx.canvas.width - 100, 20);
+    // Comentarios en la parte inferior
+    ctx.fillText('Comentarios:', tableStartX, tableStartY + rowHeight * 6);
+    wrapText(ctx, comentarios, tableStartX, tableStartY + rowHeight * 7, canvas.width - 40, 20);
 
-    // Sección de Ubicación
-    y = wrapText(`Ubicación: ${ubicacion}`, 50, y + 10, ctx.canvas.width - 100, 20);
-    y = wrapText(`Grid Locator: ${grid}`, 50, y, ctx.canvas.width - 100, 20);
-
-    // Sección de Frecuencia y Reporte
-    y = wrapText(`Frecuencia: ${frecuencia}`, 50, y + 10, ctx.canvas.width - 100, 20);
-    y = wrapText(`Modo: ${modo}`, 50, y, ctx.canvas.width - 100, 20);
-    y = wrapText(`Reporte RST: ${rst}`, 50, y, ctx.canvas.width - 100, 20);
-
-    // Sección de Equipo y Antena
-    y = wrapText(`Equipo de Radio: ${equipo}`, 50, y + 10, ctx.canvas.width - 100, 20);
-    y = wrapText(`Antena: ${antena}`, 50, y, ctx.canvas.width - 100, 20);
-
-    // Sección de Contacto y Comentarios
-    y = wrapText(`QRZ/Contacto: ${qrz}`, 50, y + 10, ctx.canvas.width - 100, 20);
-    wrapText(`Comentarios: ${comentarios}`, 50, y, ctx.canvas.width - 100, 20);
-
-    // Texto final de agradecimiento
+    // Pie de página
+    ctx.font = 'italic 12px Arial';
     ctx.textAlign = 'center';
-    ctx.font = 'italic 14px Arial';
-    ctx.fillText("Gracias por el contacto", ctx.canvas.width / 2, ctx.canvas.height - 30);
+    ctx.fillText(`QRZ/Contacto: ${qrz}`, canvas.width / 2, canvas.height - 50);
+    ctx.fillText('Gracias por el contacto', canvas.width / 2, canvas.height - 30);
 }
 
-function downloadImage() {
-    const canvas = document.getElementById('qslCanvas');
-    const link = document.createElement('a');
-    link.href = canvas.toDataURL('image/png');
-    link.download = 'tarjeta_qsl.png';
-    link.click();
+// Función para dibujar cada fila de la tabla
+function drawTableRow(ctx, label, value, x, y, width, height) {
+    ctx.strokeRect(x, y, width, height);
+    ctx.fillText(label, x + 10, y + height / 2 + 5);
+    ctx.fillText(value, x + width / 2, y + height / 2 + 5);
+}
+
+// Función para ajustar texto largo con saltos de línea
+function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
+    const words = text.split(' ');
+    let line = '';
+    for (let n = 0; n < words.length; n++) {
+        const testLine = line + words[n] + ' ';
+        const metrics = ctx.measureText(testLine);
+        const testWidth = metrics.width;
+        if (testWidth > maxWidth && n > 0) {
+            ctx.fillText(line, x, y);
+            line = words[n] + ' ';
+            y += lineHeight;
+        } else {
+            line = testLine;
+        }
+    }
+    ctx.fillText(line, x, y);
 }

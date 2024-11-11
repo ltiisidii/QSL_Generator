@@ -55,12 +55,21 @@ input, textarea, button {
     font-size: 1rem;
 }
 
+.canvas-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    max-width: 100%;
+}
+
 canvas {
+    width: 100%;
+    max-width: 600px; /* Máximo tamaño del canvas */
+    height: auto; /* Mantener relación de aspecto */
     border: 1px solid #ddd;
     margin-top: 20px;
     border-radius: 4px;
-    width: 100%; /* Canvas escala con el ancho de la pantalla */
-    height: auto;
 }
 
 button {
